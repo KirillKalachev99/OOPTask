@@ -21,6 +21,10 @@ object WallService {
         return false
     }
 
+    fun clear() {
+        posts = emptyArray()
+    }
+
     override fun toString(): String {
         return posts.contentDeepToString()
     }

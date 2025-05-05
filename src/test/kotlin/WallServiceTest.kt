@@ -1,6 +1,7 @@
 import org.junit.Test
 
 import org.junit.Assert.*
+import org.junit.Before
 import ru.netology.Comment
 import ru.netology.Like
 import ru.netology.Post
@@ -14,6 +15,10 @@ class WallServiceTest {
     private val post2 = Post(1, 2, 3, 5052025, "Обновленный текст первого поста! №1", 4, 5, true, comment1, likes1)
     private val post3 = Post(2, 2, 3, 5052025, "Обновленный текст первого поста! №2 ", 4, 5, true, comment1, likes1)
 
+    @Before
+    fun clearBeforeTest() {
+        wall1.clear()
+    }
 
     @Test
     fun add() {
