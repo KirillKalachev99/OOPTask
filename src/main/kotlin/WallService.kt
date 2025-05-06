@@ -25,6 +25,7 @@ object WallService {
 
     fun clear() {
         posts = emptyArray()
+        postId = 1
     }
 
     override fun toString(): String {

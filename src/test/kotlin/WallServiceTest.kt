@@ -40,4 +40,11 @@ class WallServiceTest {
         wall.update(nonExistentPost)
         assertEquals(1, wall.posts.size)
     }
+
+    @Test
+    fun add(){
+        val post1 = Post(2, 3, 5052025, "Текст первого поста!", 4, 5, true, comment, likes)
+        wall.add(post1)
+        assertEquals(1, wall.posts.last().id)
+    }
 }
