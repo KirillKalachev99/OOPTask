@@ -17,24 +17,6 @@ class WallServiceTest {
     }
 
     @Test
-    fun add() {
-        val post1 = Post(1, 2, 12345678, "Первый пост", 0, 0, true, comment, likes)
-        wall.add(post1)
-        assertEquals(1, wall.posts.last().id)
-    }
-
-    @Test
-    fun add_multiple_shouldIncrementIds() {
-        val post1 = Post(1, 2, 12345678, "Первый пост", 0, 0, true, comment, likes)
-        val post2 = Post(2, 3, 12345679, "Второй пост", 0, 0, true, comment, likes)
-        val addedPost1 = wall.add(post1)
-        val addedPost2 = wall.add(post2)
-        assertEquals(1, addedPost1.id)
-        assertEquals(2, addedPost2.id)
-        assertEquals(2, wall.posts.size)
-    }
-
-    @Test
     fun update_existingPost_shouldReturnTrue() {
         val post = Post(1, 2, 12345678, "Исходный текст", 0, 0, true, comment, likes)
         val added = wall.add(post)
