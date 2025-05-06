@@ -1,7 +1,6 @@
 package ru.netology
 
 data class Post(
-    val id: Int,
     val ownerId: Int,
     val fromId: Int,
     val date: Int,
@@ -10,5 +9,6 @@ data class Post(
     val replyPostId: Int,
     val friendsOnly: Boolean = true,
     val comments: Comment,
-    val likes: Like
+    val likes: Like,
+    var id: Int = 0
 )

@@ -2,22 +2,23 @@ package ru.netology
 
 object WallService {
     var posts = emptyArray<Post>()
+    private var postId = 1
 
     fun add(post: Post): Post {
-        posts += post
+        post.id = postId
+        posts += post.copy(id = postId)
+        postId++
         return posts.last()
     }
 
     fun update(post: Post): Boolean {
-        for ((i, p) in posts.withIndex()) {
+        for (p in posts) {
             if (post.id == p.id) {
-                posts[i] = post
+                posts[p.id - 1] = post.copy()
                 return true
-            } else {
-                println("Вы пытаетесь обновить несуществующий пост!")
-                return false
             }
         }
+        println("Вы пытаетесь обновить несуществующий пост!")
         return false
     }
 
