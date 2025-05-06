@@ -1,5 +1,4 @@
 import org.junit.Test
-
 import org.junit.Assert.*
 import org.junit.Before
 import ru.netology.Comment
@@ -8,35 +7,55 @@ import ru.netology.Post
 import ru.netology.WallService
 
 class WallServiceTest {
-    private val wall1 = WallService
-    private val comment1 = Comment(10)
-    private val likes1 = Like(200)
-    private val post1 = Post(2, 3, 5052025, "Текст первого поста!", 4, 5, true, comment1, likes1)
-    private val post2 = Post(2, 3, 5052025, "Обновленный текст первого поста!", 4, 5, true, comment1, likes1)
-
-    private val postForUpdate = Post(5, 6, 6052025, "Обновленный текст второго поста!", 4, 5, true, comment1, likes1, id = 1)
-
+    private val wall = WallService
+    private val comment = Comment(10)
+    private val likes = Like(200)
 
     @Before
     fun clearBeforeTest() {
-        wall1.clear()
+        wall.clear()
     }
 
     @Test
     fun add() {
-        wall1.add(post1)
-        assertEquals(1, wall1.posts.last().id)
+        val post1 = Post(1, 2, 12345678, "Первый пост", 0, 0, true, comment, likes)
+        wall.add(post1)
+        assertEquals(1, wall.posts.last().id)
     }
 
     @Test
-    fun updateTrue() {
-        wall1.add(post1)
-        assertEquals(true, wall1.update(postForUpdate))
+    fun add_multiple_shouldIncrementIds() {
+        val post1 = Post(1, 2, 12345678, "Первый пост", 0, 0, true, comment, likes)
+        val post2 = Post(2, 3, 12345679, "Второй пост", 0, 0, true, comment, likes)
+        val addedPost1 = wall.add(post1)
+        val addedPost2 = wall.add(post2)
+        assertEquals(1, addedPost1.id)
+        assertEquals(2, addedPost2.id)
+        assertEquals(2, wall.posts.size)
     }
 
     @Test
-    fun updateFalse() {
-        wall1.add(post1)
-        assertEquals(false, wall1.update(post2))
+    fun update_existingPost_shouldReturnTrue() {
+        val post = Post(1, 2, 12345678, "Исходный текст", 0, 0, true, comment, likes)
+        val added = wall.add(post)
+        val updatedPost = Post(added.ownerId, added.fromId, added.date, "Обновленный текст", 0, 0, true, comment, likes, id = added.id)
+        val result = wall.update(updatedPost)
+        assertTrue(result)
+        assertEquals("Обновленный текст", wall.posts[0].text)
+    }
+
+    @Test
+    fun update_nonExistingPost_shouldReturnFalse() {
+        val post = Post(1, 2, 12345678, "Текст", 0, 0, true, comment, likes, id = 999)
+        val result = wall.update(post)
+        assertFalse(result)
+    }
+
+    @Test
+    fun update_shouldNotChangeArraySize() {
+        wall.add(Post(1, 2, 12345678, "Тест", 0, 0, true, comment, likes))
+        val nonExistentPost = Post(1, 2, 12345678, "Нет такого поста", 0, 0, true, comment, likes, id = 999)
+        wall.update(nonExistentPost)
+        assertEquals(1, wall.posts.size)
     }
 }
