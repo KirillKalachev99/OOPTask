@@ -12,15 +12,16 @@ object WallService {
     }
 
     fun update(post: Post): Boolean {
-        for (p in posts) {
-            if (post.id == p.id) {
-                posts[p.id - 1] = post.copy()
+        for (index in posts.indices) {
+            if (posts[index].id == post.id) {
+                posts[index] = post.copy()
                 return true
             }
         }
         println("Вы пытаетесь обновить несуществующий пост!")
         return false
     }
+
 
     fun clear() {
         posts = emptyArray()
