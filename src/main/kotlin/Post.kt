@@ -5,10 +5,10 @@ data class Post(
     val fromId: Int,
     val date: Int,
     val text: String,
-    val replyOwnerId: Int,
-    val replyPostId: Int,
+    val replyOwnerId: Int? = null,
+    val replyPostId: Int? = null,
     val friendsOnly: Boolean = true,
-    val comments: Comment,
+    val comments: Comment? = null,
     val likes: Like,
     var id: Int = 0
 )
