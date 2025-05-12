@@ -8,7 +8,7 @@ data class Post(
     val replyOwnerId: Int? = null,
     val replyPostId: Int? = null,
     val friendsOnly: Boolean = true,
-    val comments: Comment? = null,
+    val comments: Comment,
     val likes: Like,
     var id: Int = 0
 )
