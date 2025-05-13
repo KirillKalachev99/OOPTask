@@ -1,14 +1,17 @@
 package ru.netology
 
+import ru.netology.attachments.Attachment
+
 data class Post(
     val ownerId: Int,
     val fromId: Int,
     val date: Int,
     val text: String,
-    val replyOwnerId: Int,
-    val replyPostId: Int,
+    val replyOwnerId: Int? = null,
+    val replyPostId: Int? = null,
     val friendsOnly: Boolean = true,
-    val comments: Comment,
+    val comments: Comment? = null,
     val likes: Like,
-    var id: Int = 0
+    var id: Int = 0,
+    var attach: Array<Attachment>? = null
 )
