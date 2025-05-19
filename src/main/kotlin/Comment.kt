@@ -1,7 +1,7 @@
 package ru.netology
 
 data class Comment(
-    val id: String = "",
+    var id: Int,
     val fromId: Int,
     val date: Int,
     val text: String,
