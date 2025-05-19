@@ -1,11 +1,12 @@
 package ru.netology
 
 data class Comment(
-    val count: Int,
-    val canPost: Boolean = true,
-    val groupsCanPost: Boolean = true,
-    val canClose: Boolean = true,
-    val canOpen: Boolean = true
+    val id: String = "",
+    val fromId: Int,
+    val date: Int,
+    val text: String,
+    val replyToUser: Int? = null,
+    val replyToComment: Int? = null
 )
 
 
