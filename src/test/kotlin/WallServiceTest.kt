@@ -8,7 +8,7 @@ import ru.netology.WallService
 
 class WallServiceTest {
     private val wall = WallService
-    private val comment = Comment(10)
+    private val comment = Comment("10", 1, 19052025, "Test comment")
     private val likes = Like(200)
 
     @Before
