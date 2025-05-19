@@ -1,5 +1,6 @@
 package ru.netology
 
+import ru.netology.wall_reports.ReportComment
 import ru.netology.attachments.*
 
 fun main() {
@@ -30,6 +31,12 @@ fun main() {
     val postForUpdate = Post(5, 6, 6052025, "Обновленный текст второго поста!", 4, 5, true, comment1, likes1, id = 2)
 
     wall1.update(postForUpdate)
+
+
+    wall1.createComment(1, comment1)
+
+    val reportComment = ReportComment(2, 1, 2)
+    wall1.reportComment(reportComment)
 
     println(wall1.toString())
 
