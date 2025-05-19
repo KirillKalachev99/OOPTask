@@ -4,7 +4,7 @@ import ru.netology.exceptions.PostNotFoundException
 import java.util.*
 
 object WallService {
-    private var posts = emptyArray<Post>()
+    var posts = emptyArray<Post>()
     private var commets = emptyArray<Comment>()
     private var postId = 1
 
