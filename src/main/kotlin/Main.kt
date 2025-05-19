@@ -4,7 +4,7 @@ import ru.netology.attachments.*
 
 fun main() {
     val wall1 = WallService
-    val comment1 = Comment("10", 1, 19052025, "Test comment")
+    val comment1 = Comment(10, 1, 19052025, "Test comment")
 
     val likes1 = Like(200)
 

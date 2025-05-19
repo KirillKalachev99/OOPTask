@@ -1,11 +1,10 @@
 package ru.netology
 
 import ru.netology.exceptions.PostNotFoundException
-import java.util.*
 
 object WallService {
     var posts = emptyArray<Post>()
-    private var commets = emptyArray<Comment>()
+    var commets = emptyArray<Comment>()
     private var postId = 1
 
     fun add(post: Post): Post {
@@ -26,14 +25,14 @@ object WallService {
         return false
     }
 
-
     fun clear() {
         posts = emptyArray()
+        commets = emptyArray()
         postId = 1
     }
 
     fun createComment(postId: Int, comment: Comment): Comment {
-        val commentId = UUID.randomUUID().toString()
+        val commentId = 1
         val postExist = posts.any { it.id == postId }
         if (!postExist) throw PostNotFoundException("Пост с ID $postId не существует!")
         val newComment = comment.copy(id = commentId)
