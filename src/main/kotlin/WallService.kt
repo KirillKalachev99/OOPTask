@@ -7,7 +7,7 @@ import ru.netology.exceptions.ReportReasonException
 
 object WallService {
     var posts = emptyArray<Post>()
-    private var commets = emptyArray<Comment>()
+    private var comments = emptyArray<Comment>()
     private var reportsComment = emptyArray<ReportComment>()
     private var commentId = 1
     private var postId = 1
@@ -32,7 +32,7 @@ object WallService {
 
     fun clear() {
         posts = emptyArray()
-        commets = emptyArray()
+        comments = emptyArray()
         reportsComment = emptyArray()
         postId = 1
         commentId = 1
@@ -42,14 +42,14 @@ object WallService {
         val postExist = posts.any { it.id == postId }
         if (!postExist) throw PostNotFoundException("Пост с ID $postId не существует!")
         val newComment = comment.copy(id = commentId)
-        commets += newComment
+        comments += newComment
         commentId++
-        return comment
+        return newComment
     }
 
     fun reportComment(report: ReportComment): ReportComment {
         val commentId = report.commentId
-        val commentExist = commets.any { it.id == report.commentId }
+        val commentExist = comments.any { it.id == report.commentId }
         val reason = report.reason
         val reasonExist = reason in report.reasonsList.indices
 
