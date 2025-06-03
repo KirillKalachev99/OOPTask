@@ -23,15 +23,15 @@ class ChatServiceTest {
     }
 
     @Test
-    fun deleteChat_ShouldMarkAsDeletedAndRemove() {
+    fun deleteChat_ShouldMarkAsDeletedAndAddToRemoved() {
         ChatService.addNewChat(true, 1, 2, 0, "Hi")
         val chatId = ChatService.getChats().last().id
         ChatService.deleteChat(chatId)
-        val chat = ChatService.getChats().find { it.id == chatId }
-        assertNull(chat)
+        val chat = ChatService.getDeletedChats().find { it.id == chatId }
+        assertEquals(true, chat?.isDeleted)
     }
 
-    @Test(expected = NoSuchElementException::class)
+    @Test(expected = MessageDeletedException::class)
     fun deleteChat_ShouldThrowIfAlreadyDeleted() {
         ChatService.addNewChat(true, 1, 2, 0, "Hi")
         val chatId = ChatService.getChats().last().id
@@ -96,12 +96,20 @@ class ChatServiceTest {
         ChatService.addNewChat(true, 1, 2, 0, "Msg1")
         ChatService.addNewChat(true, 3, 4, 0, "Msg2")
         val chats = ChatService.getChats()
-        chats[chats.size - 2].hasUnread = true
-        chats[chats.size - 1].hasUnread = true
+
+        val chat1 = chats[chats.size - 2]
+        val message1 = chat1.messages.first()
+        message1.hasRead = false
+
+        val chat2 = chats[chats.size - 1]
+        val message2 = chat2.messages.first()
+        message2.hasRead = false
+
         val unreadChats = ChatService.getUnreadChatsCount()
         assertEquals(2, unreadChats.size)
-        assertTrue(unreadChats.all { it.hasUnread })
+        assertTrue(unreadChats.all { it.messages.any { msg -> msg.hasRead == false } })
     }
+
 
     @Test
     fun getLastMessages_ShouldReturnLastMessages() {

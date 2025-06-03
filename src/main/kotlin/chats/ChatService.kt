@@ -8,6 +8,7 @@ import ru.netology.exceptions.MessageDeletedException
 
 object ChatService {
     var allChats = mutableListOf<Chat>()
+    var removedChats = mutableListOf<Chat>()
     private var newChatId = 0
     private var chatNumber = 1
     private var newMessageId = 0
@@ -20,8 +21,11 @@ object ChatService {
     }
 
     private fun chatFilter(chatId: Int): Chat {
-        return allChats.firstOrNull { it.id == chatId }
-            ?: throw NoSuchElementException("Чат с ID: $chatId не найден")
+        val chat = allChats.firstOrNull { it.id == chatId }
+        if (chat == null) {
+            val emptyChat = addNewChat(true, 0, 0, 0, "Empty chat")
+            return emptyChat
+        } else return chat
     }
 
     val addNewChat = { isDirect: Boolean, senderId: Int, receiverId: Int, groupId: Int, firstMessage: String ->
@@ -36,36 +40,50 @@ object ChatService {
         newChat.messages.add(newMessage)
         newChatId++
         chatNumber++
+        newChat
     }
 
-
-    val deleteChat = { chatId: Int ->
-        val chatToDelete = chatFilter(chatId)
+    fun deleteChat(chatId: Int) {
+        val chatToDelete = allChats.find { it.id == chatId }
+            ?: throw NoSuchElementException("Чат с ID: $chatId не найден")
         if (chatToDelete.isDeleted) {
             throw MessageDeletedException("Чат с ID: $chatId уже удален")
-        } else {
-            chatToDelete.isDeleted = true
-            chatToDelete.messages.forEach { it.isDeleted = true }
-            allChats.remove(chatToDelete)
         }
+        chatToDelete.isDeleted = true
+        chatToDelete.messages.forEach { it.isDeleted = true }
+        removedChats.add(chatToDelete)
     }
+
 
     fun getChats(): List<Chat> {
         return allChats
     }
 
+    fun getDeletedChats(): List<Chat> {
+        return removedChats
+    }
+
     val createMessage =
         { text: String, attachments: MutableList<Attachment>?, chatId: Int, sender: Int, groupId: Int ->
             val chat = chatFilter(chatId)
+            if (chat.title == "Empty chat") {
+                chat.apply {
+                    isEmpty = false
+                    if (groupId != 0) isDirect = false
+                    title = "New Chat №$chatNumber"
+                }
+            }
             val newMessage: Message = when (chat.isDirect) {
                 true -> DirectMessage(newMessageId, text, attachments = attachments).apply { senderId = sender }
                 false -> GroupMessage(newMessageId, text, attachments = attachments, groupId = groupId).apply { }
             }
             chat.messages.add(newMessage)
             newMessage.id = newMessageId
+            chatNumber++
             newMessageId++
             newMessage
         }
+
 
     val updateMessage =
         { chatId: Int, messageId: Int, newText: String ->
@@ -89,13 +107,16 @@ object ChatService {
                 throw MessageDeletedException("Сообщение с ID: $messageId уже удалено")
             } else {
                 message.isDeleted = true
-                chat.messages.remove(message) // удаляем из списка
+                chat.messages.remove(message)
             }
         }
 
     fun getUnreadChatsCount(): List<Chat> {
-        return allChats.filter { it.hasUnread }
+        return allChats.filter { chat ->
+            chat.messages.any { !it.isDeleted && it.hasRead == false }
+        }
     }
+
 
     fun getLastMessages(): List<Message> {
         val lastMessages = mutableListOf<Message>()
