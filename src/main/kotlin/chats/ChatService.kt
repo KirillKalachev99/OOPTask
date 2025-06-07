@@ -21,12 +21,13 @@ object ChatService {
     }
 
     private fun chatFilter(chatId: Int): Chat {
-        val chat = allChats.firstOrNull { it.id == chatId }
-        if (chat == null) {
-            val emptyChat = addNewChat(true, 0, 0, 0, "Empty chat")
-            return emptyChat
-        } else return chat
+        return allChats
+            .asSequence()
+            .filter { it.id == chatId }
+            .firstOrNull()
+            ?: addNewChat(true, 0, 0, 0, "Empty chat")
     }
+
 
     val addNewChat = { isDirect: Boolean, senderId: Int, receiverId: Int, groupId: Int, firstMessage: String ->
         val newChat = Chat(
@@ -44,7 +45,8 @@ object ChatService {
     }
 
     fun deleteChat(chatId: Int) {
-        val chatToDelete = allChats.find { it.id == chatId }
+        val chatToDelete = allChats.asSequence()
+            .find { it.id == chatId }
             ?: throw NoSuchElementException("Чат с ID: $chatId не найден")
         if (chatToDelete.isDeleted) {
             throw MessageDeletedException("Чат с ID: $chatId уже удален")
@@ -88,7 +90,8 @@ object ChatService {
     val updateMessage =
         { chatId: Int, messageId: Int, newText: String ->
             val chat = chatFilter(chatId)
-            val message = chat.messages.firstOrNull { it.id == messageId }
+            val message = chat.messages.asSequence()
+                .firstOrNull { it.id == messageId }
                 ?: throw NoSuchElementException("Сообщение с ID: $messageId не найдено")
             if (message.isDeleted) {
                 throw MessageDeletedException("Сообщение с ID: $messageId удалено")
@@ -101,7 +104,8 @@ object ChatService {
     val deleteMessage =
         { chatId: Int, messageId: Int ->
             val chat = chatFilter(chatId)
-            val message = chat.messages.firstOrNull { it.id == messageId }
+            val message = chat.messages.asSequence()
+                .firstOrNull { it.id == messageId }
                 ?: throw NoSuchElementException("Сообщение с ID: $messageId не найдено")
             if (message.isDeleted) {
                 throw MessageDeletedException("Сообщение с ID: $messageId уже удалено")
@@ -113,20 +117,15 @@ object ChatService {
 
     fun getUnreadChatsCount(): List<Chat> {
         return allChats.filter { chat ->
-            chat.messages.any { !it.isDeleted && it.hasRead == false }
+            chat.messages.any { !it.isDeleted && !it.hasRead }
         }
     }
 
 
     fun getLastMessages(): List<Message> {
-        val lastMessages = mutableListOf<Message>()
-        allChats.forEach { chat ->
-            val lastMsg = chat.messages.lastOrNull()
-            if (lastMsg != null) {
-                lastMessages.add(lastMsg)
-            }
-        }
-        return lastMessages
+        return allChats.asSequence()
+            .mapNotNull { chat -> chat.messages.lastOrNull() }
+            .toList()
     }
 
     fun getChatMessages(chatId: Int, count: Int): List<Message>? {
